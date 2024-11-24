@@ -17,11 +17,11 @@ public class ScholarshipApplications {
 
     private Integer scholarshipId;
 
-    private boolean phase1;
+    private boolean phase1 =  false;
 
-    private boolean phase2;
+    private boolean phase2 =  false;
 
-    private boolean phase3;
+    private boolean phase3 =  false;
 
 	public Long getApplicationId() {
 		return applicationId;

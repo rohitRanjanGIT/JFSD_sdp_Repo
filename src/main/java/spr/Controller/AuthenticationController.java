@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import spr.Service.*;
 import spr.Model.*;
 
+import javax.servlet.http.HttpSession;
+
 @RestController
 @RequestMapping("/auth")
 public class AuthenticationController {
@@ -16,32 +18,34 @@ public class AuthenticationController {
         this.authService = authService;
     }
 
-
- // Admin login
+    // Admin login
     @PostMapping("/admin/login")
-    public ResponseEntity<?> loginAdmin(@RequestBody AdminUser adminUser) {
+    public ResponseEntity<?> loginAdmin(@RequestBody AdminUser adminUser, HttpSession session) {
         AdminUser authenticatedAdmin = authService.authenticateAdmin(adminUser);
 
         if (authenticatedAdmin != null) {
-            // Return the authenticated AdminUser object with a 200 status
+            session.setAttribute("admin", authenticatedAdmin); // Store in session
             return new ResponseEntity<>(authenticatedAdmin, HttpStatus.OK);
         } else {
-            // Return an error message with a 401 status
             return new ResponseEntity<>("Invalid Admin Credentials", HttpStatus.UNAUTHORIZED);
         }
     }
 
+    // Student login
     @PostMapping("/student/login")
-    public ResponseEntity<?> loginStudent(@RequestBody StudentUser studentUser) {
+    public ResponseEntity<?> loginStudent(@RequestBody StudentUser studentUser, HttpSession session) {
         StudentUser authenticatedUser = authService.authenticateStudent(studentUser);
+
         if (authenticatedUser != null) {
-            return new ResponseEntity<>(authenticatedUser, HttpStatus.OK); // Return user details
+            session.setAttribute("student", authenticatedUser); // Store in session
+            return new ResponseEntity<>(authenticatedUser, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Invalid Student Credentials", HttpStatus.UNAUTHORIZED);
         }
-        return new ResponseEntity<>("Invalid Student Credentials", HttpStatus.UNAUTHORIZED);
     }
 
     // Register student
-        @PostMapping("/student/register")
+    @PostMapping("/student/register")
     public ResponseEntity<StudentUser> registerStudent(@RequestBody StudentUser studentUser) {
         return new ResponseEntity<>(authService.registerStudent(studentUser), HttpStatus.CREATED);
     }
@@ -51,17 +55,11 @@ public class AuthenticationController {
     public ResponseEntity<AdminUser> registerAdmin(@RequestBody AdminUser adminUser) {
         return new ResponseEntity<>(authService.registerAdmin(adminUser), HttpStatus.CREATED);
     }
-}
 
-// Student login
-//    @PostMapping("/student/login")
-//    public ResponseEntity<String> loginStudent(@RequestBody StudentUser studentUser) {
-//        boolean isAuthenticated = authService.authenticateStudent(studentUser);
-//        return isAuthenticated ? new ResponseEntity<>("Student Login Successful", HttpStatus.OK) : new ResponseEntity<>("Invalid Student Credentials", HttpStatus.UNAUTHORIZED);
-//    }
-//    // Admin login
-//    @PostMapping("/admin/login")
-//    public ResponseEntity<String> loginAdmin(@RequestBody AdminUser adminUser) {
-//        boolean isAuthenticated = authService.authenticateAdmin(adminUser);
-//        return isAuthenticated ? new ResponseEntity<>("Admin Login Successful", HttpStatus.OK) : new ResponseEntity<>("Invalid Admin Credentials", HttpStatus.UNAUTHORIZED);
-//    }
+    // Logout
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(HttpSession session) {
+        session.invalidate(); // Invalidate session
+        return new ResponseEntity<>("Logged out successfully", HttpStatus.OK);
+    }
+}

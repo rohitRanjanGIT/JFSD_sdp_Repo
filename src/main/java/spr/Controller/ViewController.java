@@ -8,18 +8,14 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class ViewController {
 	
-//	@GetMapping("/")
-//	public ModelAndView homePage() {
-//	    ModelAndView mav = new ModelAndView("home");
-//	    return mav;
-//	}
-	@GetMapping("/")
-	public ModelAndView homePage() {
-	    ModelAndView mav = new ModelAndView("template"); // Referencing the template.jsp
-	    mav.addObject("contentPage", "homepage.jsp"); // Including homepage.jsp dynamically
-	    mav.addObject("pageTitle", "Scholarship Management System"); // Setting the page title
-	    return mav;
-	}
+    @GetMapping("/")
+    public ModelAndView homePage() {
+        // Creating a ModelAndView object
+        ModelAndView mav = new ModelAndView();
+        // Setting the view name to the JSP file "home.jsp"
+        mav.setViewName("homepage");
+        return mav;
+    }
 
 
 }

@@ -16,11 +16,11 @@ public class FinancialAidApplications {
 
     private Integer scholarshipId;
 
-    private boolean phase1; // 1
+    private boolean phase1 =  false;
 
-    private boolean phase2; // reject
+    private boolean phase2 =  false;
 
-    private boolean phase3; // accept
+    private boolean phase3 =  false;
 
 	public Long getApplicationId() {
 		return applicationId;
